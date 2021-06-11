@@ -12,22 +12,36 @@
       crossorigin="anonymous"
     />
   </head>
-  <body>
-    <div
-      class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark"
-      style="width: 395px"
-    >
-      <section class="row">
-        <label class="form-label h2">Weather Search by City</label>
-        <input
-          type="text"
-          class="form-control form-control-lg col-8"
-          placeholder="Enter City"
-          style="width: auto"
-        />
-        <button type="button" class="btn btn-light col-4">Search</button>
-      </section>
-    </div>
+  <body class="bg-dark text-white">
+    <main id="main">
+      <div
+        class="
+          d-flex
+          flex-column flex-shrink-0
+          p-3
+          text-white
+          bg-dark
+          border border-3
+          rounded-3
+        "
+        style="width: 395px"
+      >
+        <section class="row">
+          <label class="form-label h2">Weather Search by City</label>
+          <input
+            type="text"
+            id="city-search"
+            class="form-control form-control-lg col-8"
+            placeholder="Enter City"
+            style="width: auto"
+          />
+          <button type="button" id="search-btn" class="btn btn-light col-4">
+            Search
+          </button>
+        </section>
+        <hr />
+      </div>
+    </main>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"

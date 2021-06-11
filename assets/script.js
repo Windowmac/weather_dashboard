@@ -12,3 +12,38 @@
 //store the successfully searched city as a local storage item.
 //display buttons of the previously searched cities below the search bar
 //when the user clicks the button, grab the text content of the button and perform the search and fetch again for that item.
+const mainEl = document.getElementById('main');
+const apiKey = '82689e438f6babdf340f137676aecf51';
+let userCity = '';
+const searchBtn = document.getElementById('search-btn');
+
+const fetchWeather = (apiUrl) => {
+  fetch(apiUrl)
+    .then((response) => {
+      if (response.status === 404) {
+        const h1El = document.createElement('h1');
+        h1El.textContent = 'Error. Please enter a valid city and try again';
+        mainEl.appendChild(h1El);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const h1El = document.createElement('h1');
+      h1El.classList.add('displayed');
+      const h2El = document.createElement('h2');
+      h2El.classList.add('displayed');
+      console.log(data);
+      console.log(data.weather[0]);
+      h1El.textContent = data.weather[0].description;
+      h2El.textContent = data.main.temp;
+      mainEl.appendChild(h1El);
+      mainEl.appendChild(h2El);
+    });
+};
+function handleClick() {
+  const inputEl = document.getElementById('city-search');
+  userCity = inputEl.value;
+  const weatherApi = `https://api.openweathermap.org/data/2.5/weather?q=${userCity}&appid=${apiKey}&units=imperial`;
+  fetchWeather(weatherApi);
+}
+searchBtn.addEventListener('click', handleClick);
