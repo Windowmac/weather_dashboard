@@ -12,6 +12,7 @@
 //store the successfully searched city as a local storage item.
 //display buttons of the previously searched cities below the search bar
 //when the user clicks the button, grab the text content of the button and perform the search and fetch again for that item.
+
 const mainEl = document.getElementById('main');
 const navEl = document.getElementById('nav-column');
 const apiKey = '82689e438f6babdf340f137676aecf51';
@@ -61,13 +62,18 @@ const fetchWeather = (apiUrl) => {
             const day = currentDate.getDate();
             const year = currentDate.getFullYear();
 
+            if (document.getElementById('current-day')) {
+              document.getElementById('current-day').remove();
+            }
+
             const currentDayEl = document.createElement('section');
             currentDayEl.classList.add('container', 'col-7');
+            currentDayEl.id = 'current-day';
 
             const dateEl = document.createElement('h1');
             dateEl.textContent = `${month}/${day}/${year}`;
             currentDayEl.appendChild(dateEl);
-            document.getElementById('first-row').appendChild(currentDayEl);
+            document.getElementById('first-row').appendChild(currentDayEl); //continue from here
 
             const mainWeatherEl = document.createElement('h2');
             mainWeatherEl.textContent = data.current.weather[0].main;
