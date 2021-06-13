@@ -62,9 +62,9 @@ const fetchWeather = (apiUrl) => {
             if (document.getElementById('current-day')) {
               document.getElementById('current-day').remove();
             }
-
+            console.log(data);
             //display the city, date of forecast, and an icon for the main weather status
-            //in smaller text, display the current day's temp, wind, humidity, and uv index (with colored background representing favorable, moderate, severe uv)
+
             const currentDate = new Date(data.current.dt * 1000);
             const month = currentDate.getMonth();
             const day = currentDate.getDate();
@@ -85,6 +85,7 @@ const fetchWeather = (apiUrl) => {
             const mainWeatherEl = document.createElement('h2');
             mainWeatherEl.textContent = data.current.weather[0].description;
             mainWeatherEl.classList.add('col-4');
+
             const mainWeatherIcon = document.createElement('img');
             mainWeatherIcon.src = `http://openweathermap.org/img/wn/${data.current.weather[0].icon}@2x.png`;
             mainWeatherIcon.classList.add(
@@ -93,11 +94,36 @@ const fetchWeather = (apiUrl) => {
               'bg-dark',
               'col-2'
             );
+
             rowDiv.appendChild(cityEl);
             rowDiv.appendChild(mainWeatherEl);
             rowDiv.appendChild(mainWeatherIcon);
 
+            //in smaller text, display the current day's temp, wind, humidity, and uv index (with colored background representing favorable, moderate, severe uv)
+            const currentTempEl = document.createElement('h3');
+            currentTempEl.textContent = `Temperature (Fahrenheit): ${data.current.temp}`;
+            const currentWindEl = document.createElement('h3');
+            currentWindEl.textContent = `Wind: ${data.current.weather[0].wind}`;
+            const currentHumidityEl = document.createElement('h3');
+            currentHumidityEl.textContent = `Humidity: ${data.current.humidity}`;
+            const uvEl = document.createElement('h3');
+            uvEl.textContent = `UV Index: ${data.current.uvi}`;
+            uvEl.classList.add('rounded-pill', 'border', 'border-2');
+            uvEl.style.width = 'fit-content';
+            uvEl.style.padding = '15px';
+            if (uvEl.textContent > 2) {
+              uvEl.classList.add('bg-warning');
+            } else if (uvEl.textContent > 5) {
+              uvEl.classList.add('bg-danger');
+            } else {
+              uvEl.classList.add('bg-success');
+            }
+
             currentDayEl.appendChild(rowDiv);
+            currentDayEl.appendChild(currentTempEl);
+            currentDayEl.appendChild(currentWindEl);
+            currentDayEl.appendChild(currentHumidityEl);
+            currentDayEl.appendChild(uvEl);
           });
       };
       oneCallFetch(data);
@@ -109,4 +135,14 @@ function handleClick() {
   const weatherApi = `https://api.openweathermap.org/data/2.5/weather?q=${userCity}&units=imperial&appid=${apiKey}`;
   fetchWeather(weatherApi);
 }
+function handleKeyUp(event) {
+  if (event.keyCode === 13) {
+    const inputEl = document.getElementById('city-search');
+    userCity = inputEl.value;
+    const weatherApi = `https://api.openweathermap.org/data/2.5/weather?q=${userCity}&units=imperial&appid=${apiKey}`;
+    fetchWeather(weatherApi);
+  }
+}
+
 searchBtn.addEventListener('click', handleClick);
+document.getElementById('city-search').addEventListener('keyup', handleKeyUp);
