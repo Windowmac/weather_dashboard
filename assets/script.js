@@ -6,7 +6,7 @@
 //in smaller text, display the current day's temp, wind, humidity, and uv index (with colored background representing favorable, moderate, severe uv)
 //below the current day's display, place a display of a 5-day forecast
 //one card for each day of the forecast
-//each card displays the same info from the current day excepting the uv index
+//each card displays the same info categories from the current day excepting the uv index
 //to make each card use the fetch data from the search - it responds with a 7-day forecast in an array. loop through that array for each of the 5 days needed, and add needed data to the card.
 //if there is not a local storage item of the same name -
 //store the successfully searched city as a local storage item.
@@ -45,8 +45,9 @@ const fetchWeather = (apiUrl) => {
           fetchWeather(weatherApi);
         });
       }
-      //display the city, date of forecast, and an icon for the main weather status
-      //in smaller text, display the current day's temp, wind, humidity, and uv index (with colored background representing favorable, moderate, severe uv)
+
+      userCity = data.name; //for capitalization/accuracy
+      console.log(userCity);
       console.log(data);
       //call another fetch with lat and lon for more detailed information as well as 7day forecast
 
@@ -56,28 +57,47 @@ const fetchWeather = (apiUrl) => {
         )
           .then((response) => response.json())
           .then((data) => {
-            console.log(data);
-            const currentDate = new Date(data.current.dt * 1000);
-            const month = currentDate.getMonth();
-            const day = currentDate.getDate();
-            const year = currentDate.getFullYear();
+            //for current weather display
 
             if (document.getElementById('current-day')) {
               document.getElementById('current-day').remove();
             }
 
+            //display the city, date of forecast, and an icon for the main weather status
+            //in smaller text, display the current day's temp, wind, humidity, and uv index (with colored background representing favorable, moderate, severe uv)
+            const currentDate = new Date(data.current.dt * 1000);
+            const month = currentDate.getMonth();
+            const day = currentDate.getDate();
+            const year = currentDate.getFullYear();
             const currentDayEl = document.createElement('section');
             currentDayEl.classList.add('container', 'col-7');
             currentDayEl.id = 'current-day';
+            const rowDiv = document.createElement('div');
+            rowDiv.classList.add('row');
 
             const dateEl = document.createElement('h1');
             dateEl.textContent = `${month}/${day}/${year}`;
             currentDayEl.appendChild(dateEl);
             document.getElementById('first-row').appendChild(currentDayEl); //continue from here
+            const cityEl = document.createElement('h1');
+            cityEl.textContent = userCity;
 
             const mainWeatherEl = document.createElement('h2');
-            mainWeatherEl.textContent = data.current.weather[0].main;
-            currentDayEl.appendChild(mainWeatherEl);
+            mainWeatherEl.textContent = data.current.weather[0].description;
+            mainWeatherEl.classList.add('col-4');
+            const mainWeatherIcon = document.createElement('img');
+            mainWeatherIcon.src = `http://openweathermap.org/img/wn/${data.current.weather[0].icon}@2x.png`;
+            mainWeatherIcon.classList.add(
+              'rounded',
+              'float-start',
+              'bg-dark',
+              'col-2'
+            );
+            rowDiv.appendChild(cityEl);
+            rowDiv.appendChild(mainWeatherEl);
+            rowDiv.appendChild(mainWeatherIcon);
+
+            currentDayEl.appendChild(rowDiv);
           });
       };
       oneCallFetch(data);
