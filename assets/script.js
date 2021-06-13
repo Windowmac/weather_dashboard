@@ -7,7 +7,7 @@
 //below the current day's display, place a display of a 5-day forecast
 //one card for each day of the forecast
 //each card displays the same info categories from the current day excepting the uv index
-//to make each card use the fetch data from the search - it responds with a 7-day forecast in an array. loop through that array for each of the 5 days needed, and add needed data to the card.
+//to make each card use the fetch data from the search - it responds with a 7-day forecast in an array. loop through that array for each of the 5 days needed, and add data to the card.
 //if there is not a local storage item of the same name -
 //store the successfully searched city as a local storage item.
 //display buttons of the previously searched cities below the search bar
@@ -70,7 +70,12 @@ const fetchWeather = (apiUrl) => {
             const day = currentDate.getDate();
             const year = currentDate.getFullYear();
             const currentDayEl = document.createElement('section');
-            currentDayEl.classList.add('container', 'col-7');
+            currentDayEl.classList.add(
+              'container',
+              'col-7',
+              'border',
+              'border-1'
+            );
             currentDayEl.id = 'current-day';
             const rowDiv = document.createElement('div');
             rowDiv.classList.add('row');
@@ -103,7 +108,7 @@ const fetchWeather = (apiUrl) => {
             const currentTempEl = document.createElement('h3');
             currentTempEl.textContent = `Temperature (Fahrenheit): ${data.current.temp}`;
             const currentWindEl = document.createElement('h3');
-            currentWindEl.textContent = `Wind: ${data.current.weather[0].wind}`;
+            currentWindEl.textContent = `Wind: ${data.current.wind_speed}mph`;
             const currentHumidityEl = document.createElement('h3');
             currentHumidityEl.textContent = `Humidity: ${data.current.humidity}`;
 
@@ -129,10 +134,14 @@ const fetchWeather = (apiUrl) => {
 
             const createForecast = (data) => {
               console.log(data);
+              if (document.getElementById('forecast-container')) {
+                document.getElementById('forecast-container').remove();
+              }
               const forecastContainerEl = document.createElement('section');
-              forecastContainerEl.classList.add('container');
+              forecastContainerEl.classList.add('container-fluid');
+              forecastContainerEl.id = 'forecast-container';
               const forecastRowEl = document.createElement('div');
-              forecastRowEl.classList.add('row');
+              forecastRowEl.classList.add('row', 'justify-content-evenly');
 
               const forecastArray = [];
               for (let i = 1; i < 6; i++) {
@@ -140,14 +149,47 @@ const fetchWeather = (apiUrl) => {
               }
               console.log(forecastArray);
               const createForecastCard = (forecast) => {
+                if (!forecast.length) {
+                  return;
+                }
                 const day = forecast.shift();
                 const date = new Date(day.dt * 1000);
                 const dateEl = document.createElement('h3');
                 dateEl.textContent = `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
-                console.log(date);
-                forecastRowEl.appendChild(dateEl);
+
                 forecastContainerEl.appendChild(forecastRowEl);
                 mainEl.appendChild(forecastContainerEl); //continue from here TODO: create actual bootstrap card
+
+                const cardColumn = document.createElement('div');
+                cardColumn.classList.add('col-2');
+                const cardEl = document.createElement('div');
+                cardEl.classList.add('card', 'bg-dark', 'border', 'rounded');
+                const cardImg = document.createElement('img');
+                cardImg.classList.add('card-img-top');
+                cardImg.src = `http://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`;
+                cardImg.style.width = '50%';
+                const cardBody = document.createElement('div');
+                cardBody.classList.add('card-body');
+                const cardTemp = document.createElement('h4');
+                cardTemp.classList.add('fs-5');
+                cardTemp.textContent = `Temp: ${day.temp.day} deg`;
+                const cardWind = document.createElement('h4');
+                cardWind.classList.add('fs-5');
+                cardWind.textContent = `Wind: ${day.wind_speed}mph`;
+                const cardHumidity = document.createElement('h4');
+                cardHumidity.classList.add('fs-5');
+                cardHumidity.textContent = `Humidity: ${day.humidity}`;
+
+                cardEl.appendChild(cardImg);
+                cardEl.appendChild(cardBody);
+                cardBody.appendChild(dateEl);
+                cardBody.appendChild(cardTemp);
+                cardBody.appendChild(cardWind);
+                cardBody.appendChild(cardHumidity);
+                forecastRowEl.appendChild(cardColumn);
+                cardColumn.appendChild(cardEl);
+
+                createForecastCard(forecast);
               };
               createForecastCard(forecastArray);
             };
