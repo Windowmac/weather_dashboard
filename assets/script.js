@@ -78,7 +78,7 @@ const fetchWeather = (apiUrl) => {
             const dateEl = document.createElement('h1');
             dateEl.textContent = `${month}/${day}/${year}`;
             currentDayEl.appendChild(dateEl);
-            document.getElementById('first-row').appendChild(currentDayEl); //continue from here
+            document.getElementById('first-row').appendChild(currentDayEl);
             const cityEl = document.createElement('h1');
             cityEl.textContent = userCity;
 
@@ -106,14 +106,16 @@ const fetchWeather = (apiUrl) => {
             currentWindEl.textContent = `Wind: ${data.current.weather[0].wind}`;
             const currentHumidityEl = document.createElement('h3');
             currentHumidityEl.textContent = `Humidity: ${data.current.humidity}`;
+
             const uvEl = document.createElement('h3');
             uvEl.textContent = `UV Index: ${data.current.uvi}`;
             uvEl.classList.add('rounded-pill', 'border', 'border-2');
             uvEl.style.width = 'fit-content';
             uvEl.style.padding = '15px';
-            if (uvEl.textContent > 2) {
+            if (data.current.uvi > 2) {
               uvEl.classList.add('bg-warning');
-            } else if (uvEl.textContent > 5) {
+            }
+            if (data.current.uvi > 5) {
               uvEl.classList.add('bg-danger');
             } else {
               uvEl.classList.add('bg-success');
@@ -124,6 +126,33 @@ const fetchWeather = (apiUrl) => {
             currentDayEl.appendChild(currentWindEl);
             currentDayEl.appendChild(currentHumidityEl);
             currentDayEl.appendChild(uvEl);
+
+            const createForecast = (data) => {
+              console.log(data);
+              const forecastContainerEl = document.createElement('section');
+              forecastContainerEl.classList.add('container');
+              const forecastRowEl = document.createElement('div');
+              forecastRowEl.classList.add('row');
+
+              const forecastArray = [];
+              for (let i = 1; i < 6; i++) {
+                forecastArray.push(data.daily[i]);
+              }
+              console.log(forecastArray);
+              const createForecastCard = (forecast) => {
+                const day = forecast.shift();
+                const date = new Date(day.dt * 1000);
+                const dateEl = document.createElement('h3');
+                dateEl.textContent = `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
+                console.log(date);
+                forecastRowEl.appendChild(dateEl);
+                forecastContainerEl.appendChild(forecastRowEl);
+                mainEl.appendChild(forecastContainerEl); //continue from here TODO: create actual bootstrap card
+              };
+              createForecastCard(forecastArray);
+            };
+
+            createForecast(data);
           });
       };
       oneCallFetch(data);
