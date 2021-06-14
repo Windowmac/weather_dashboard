@@ -25,19 +25,21 @@ const fetchWeather = (apiUrl) => {
     .then((response) => {
       if (response.status === 404) {
         const h1El = document.createElement('h1');
+        h1El.id = 'error-msg';
         h1El.textContent = 'Error. Please enter a valid city and try again';
         mainEl.appendChild(h1El);
+        return;
       }
       return response.json();
     })
     .then((data) => {
       const cityName = data.name;
-      if (!localStorage.getItem(cityName)) {
-        localStorage.setItem(cityName, cityName);
+      if (!localStorage.getItem('search-history')) {
+        localStorage.setItem('search-history', cityName);
         const h1El = document.createElement('h1');
         h1El.classList.add('rounded-pill', 'bg-primary', 'text-center');
         h1El.style = 'cursor:pointer; padding: 7px';
-        h1El.textContent = localStorage.getItem(cityName);
+        h1El.textContent = cityName;
         navEl.appendChild(h1El);
         h1El.addEventListener('click', (event) => {
           userCity = event.target.textContent;
@@ -47,10 +49,12 @@ const fetchWeather = (apiUrl) => {
       }
 
       userCity = data.name; //for capitalization/accuracy
-      console.log(userCity);
-      console.log(data);
-      //call another fetch with lat and lon for more detailed information as well as 7day forecast
 
+      if (document.getElementById('error-msg')) {
+        document.getElementById('error-msg').remove(); //to remove the error msg from a previous search
+      }
+
+      //call another fetch with lat and lon for more detailed information as well as 7day forecast
       const oneCallFetch = (data) => {
         fetch(
           `https://api.openweathermap.org/data/2.5/onecall?lat=${data.coord.lat}&lon=${data.coord.lon}&appid=${apiKey}&units=imperial`
@@ -72,7 +76,8 @@ const fetchWeather = (apiUrl) => {
             const currentDayEl = document.createElement('section');
             currentDayEl.classList.add(
               'container',
-              'col-7',
+              'col-12',
+              'col-md-7',
               'border',
               'border-1'
             );
@@ -158,10 +163,10 @@ const fetchWeather = (apiUrl) => {
                 dateEl.textContent = `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
 
                 forecastContainerEl.appendChild(forecastRowEl);
-                mainEl.appendChild(forecastContainerEl); //continue from here TODO: create actual bootstrap card
+                mainEl.appendChild(forecastContainerEl);
 
                 const cardColumn = document.createElement('div');
-                cardColumn.classList.add('col-2');
+                cardColumn.classList.add('col-12', 'col-md-2');
                 const cardEl = document.createElement('div');
                 cardEl.classList.add('card', 'bg-dark', 'border', 'rounded');
                 const cardImg = document.createElement('img');
