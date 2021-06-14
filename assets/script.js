@@ -35,9 +35,15 @@ const fetchWeather = (apiUrl) => {
     .then((data) => {
       const cityName = data.name;
       if (!localStorage.getItem('search-history')) {
-        localStorage.setItem('search-history', cityName);
+        const storageArray = [cityName];
+        localStorage.setItem('search-history', JSON.stringify(storageArray));
         const h1El = document.createElement('h1');
-        h1El.classList.add('rounded-pill', 'bg-primary', 'text-center');
+        h1El.classList.add(
+          'rounded-pill',
+          'bg-primary',
+          'text-center',
+          'search-item'
+        );
         h1El.style = 'cursor:pointer; padding: 7px';
         h1El.textContent = cityName;
         navEl.appendChild(h1El);
@@ -48,6 +54,34 @@ const fetchWeather = (apiUrl) => {
         });
       }
 
+      //update storage
+      //pull storage array, check for match, if not push cityName, re-save storage array via stringify
+      const updateStorage = () => {
+        const storageArray = JSON.parse(localStorage.getItem('search-history'));
+
+        while (
+          storageArray[storageArray.length - 1] !== cityName &&
+          storageArray.length
+        ) {
+          storageArray.pop();
+          console.log(storageArray);
+        }
+        if (!storageArray.length) {
+          const newStorageArray = JSON.parse(
+            localStorage.getItem('search-history')
+          );
+          newStorageArray.push(cityName);
+          localStorage.setItem(
+            'search-history',
+            JSON.stringify(newStorageArray)
+          );
+        } else {
+          return;
+        }
+      };
+      //handle storage
+      updateStorage();
+      handleStorage();
       userCity = data.name; //for capitalization/accuracy
 
       if (document.getElementById('error-msg')) {
@@ -222,3 +256,38 @@ function handleKeyUp(event) {
 
 searchBtn.addEventListener('click', handleClick);
 document.getElementById('city-search').addEventListener('keyup', handleKeyUp);
+
+//handle page-load local storage here
+
+const handleStorage = () => {
+  if (localStorage.getItem('search-history')) {
+    //pull all search-item elements from nav, create an array from them, remove them
+    const searchItemsArray = Array.from(
+      document.querySelectorAll('.search-item')
+    );
+    searchItemsArray.forEach((item) => {
+      item.remove();
+    });
+
+    const historyArray = JSON.parse(localStorage.getItem('search-history'));
+    console.log(historyArray);
+    historyArray.forEach(function (item) {
+      const h1El = document.createElement('h1');
+      h1El.classList.add(
+        'rounded-pill',
+        'bg-primary',
+        'text-center',
+        'search-item'
+      );
+      h1El.style = 'cursor:pointer; padding: 7px';
+      h1El.textContent = item;
+      navEl.appendChild(h1El);
+      h1El.addEventListener('click', (event) => {
+        userCity = event.target.textContent;
+        const weatherApi = `https://api.openweathermap.org/data/2.5/weather?q=${userCity}&units=imperial&appid=${apiKey}`;
+        fetchWeather(weatherApi);
+      });
+    });
+  }
+};
+handleStorage();
