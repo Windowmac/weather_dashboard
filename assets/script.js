@@ -105,7 +105,8 @@ const fetchWeather = (apiUrl) => {
             //display the city, date of forecast, and an icon for the main weather status
 
             const currentDate = new Date(data.current.dt * 1000);
-            const month = currentDate.getMonth();
+            console.log(currentDate);
+            const month = currentDate.getMonth() + 1;
             const day = currentDate.getDate();
             const year = currentDate.getFullYear();
             const currentDayEl = document.createElement('section');
