@@ -7,6 +7,6 @@ As the user searches a city, it is added to the user's history and appears as a 
 Project viewable at:
 https://windowmac.github.io/weather_dashboard/
 
-![The weather dashboard on first load](./assets.weather_dashboard_before)
-![The weather dashboard after a few searches](./assets.weather_dashboard_after)
-![On mobile](./assets.weather_dashboard_mobile)
+![The weather dashboard on first load](./assets.weather_dashboard_before.png)
+![The weather dashboard after a few searches](./assets.weather_dashboard_after.png)
+![On mobile](./assets.weather_dashboard_mobile.png)
