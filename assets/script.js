@@ -172,6 +172,9 @@ const fetchWeather = (apiUrl) => {
             currentDayEl.appendChild(currentHumidityEl);
             currentDayEl.appendChild(uvEl);
 
+            //below the current day's display, place a display of a 5-day forecast
+            //one card for each day of the forecast
+            //each card displays the same info categories from the current day excepting the uv index
             const createForecast = (data) => {
               if (document.getElementById('forecast-container')) {
                 document.getElementById('forecast-container').remove();
@@ -186,6 +189,8 @@ const fetchWeather = (apiUrl) => {
               for (let i = 1; i < 6; i++) {
                 forecastArray.push(data.daily[i]);
               }
+
+              //use this function to create individual cards and append them to the row
               const createForecastCard = (forecast) => {
                 if (!forecast.length) {
                   return;
@@ -238,12 +243,14 @@ const fetchWeather = (apiUrl) => {
       oneCallFetch(data);
     });
 };
+
 function handleClick() {
   const inputEl = document.getElementById('city-search');
   userCity = inputEl.value;
   const weatherApi = `https://api.openweathermap.org/data/2.5/weather?q=${userCity}&units=imperial&appid=${apiKey}`;
   fetchWeather(weatherApi);
 }
+
 function handleKeyUp(event) {
   if (event.keyCode === 13) {
     const inputEl = document.getElementById('city-search');
@@ -257,7 +264,8 @@ searchBtn.addEventListener('click', handleClick);
 document.getElementById('city-search').addEventListener('keyup', handleKeyUp);
 
 //handle page-load local storage here
-
+//store the successfully searched city as a local storage item.
+//display buttons of the previously searched cities below the search bar
 const handleStorage = () => {
   if (localStorage.getItem('search-history')) {
     //pull all search-item elements from nav, create an array from them, remove them
@@ -268,6 +276,7 @@ const handleStorage = () => {
       item.remove();
     });
 
+    //then append search history buttons on nav
     const historyArray = JSON.parse(localStorage.getItem('search-history'));
     historyArray.forEach(function (item) {
       const h1El = document.createElement('h1');
@@ -288,4 +297,5 @@ const handleStorage = () => {
     });
   }
 };
+
 handleStorage();
