@@ -84,7 +84,10 @@ const fetchWeather = (apiUrl) => {
       userCity = data.name; //for capitalization/accuracy
 
       if (document.getElementById('error-msg')) {
-        document.getElementById('error-msg').remove(); //to remove the error msg from a previous search
+        const errorMsgArray = Array.from(
+          document.querySelectorAll('#error-msg')
+        );
+        errorMsgArray.forEach((item) => item.remove()); //to remove the error msg from a previous search (and any multiples)
       }
 
       //call another fetch with lat and lon for more detailed information as well as 7day forecast
