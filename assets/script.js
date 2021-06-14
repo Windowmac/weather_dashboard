@@ -27,7 +27,7 @@ const fetchWeather = (apiUrl) => {
         const h1El = document.createElement('h1');
         h1El.id = 'error-msg';
         h1El.textContent = 'Error. Please enter a valid city and try again';
-        mainEl.appendChild(h1El);
+        navEl.appendChild(h1El);
         return;
       }
       return response.json();
@@ -64,7 +64,6 @@ const fetchWeather = (apiUrl) => {
           storageArray.length
         ) {
           storageArray.pop();
-          console.log(storageArray);
         }
         if (!storageArray.length) {
           const newStorageArray = JSON.parse(
@@ -100,7 +99,6 @@ const fetchWeather = (apiUrl) => {
             if (document.getElementById('current-day')) {
               document.getElementById('current-day').remove();
             }
-            console.log(data);
             //display the city, date of forecast, and an icon for the main weather status
 
             const currentDate = new Date(data.current.dt * 1000);
@@ -172,7 +170,6 @@ const fetchWeather = (apiUrl) => {
             currentDayEl.appendChild(uvEl);
 
             const createForecast = (data) => {
-              console.log(data);
               if (document.getElementById('forecast-container')) {
                 document.getElementById('forecast-container').remove();
               }
@@ -186,7 +183,6 @@ const fetchWeather = (apiUrl) => {
               for (let i = 1; i < 6; i++) {
                 forecastArray.push(data.daily[i]);
               }
-              console.log(forecastArray);
               const createForecastCard = (forecast) => {
                 if (!forecast.length) {
                   return;
@@ -270,7 +266,6 @@ const handleStorage = () => {
     });
 
     const historyArray = JSON.parse(localStorage.getItem('search-history'));
-    console.log(historyArray);
     historyArray.forEach(function (item) {
       const h1El = document.createElement('h1');
       h1El.classList.add(
