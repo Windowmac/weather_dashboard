@@ -199,7 +199,9 @@ const fetchWeather = (apiUrl) => {
                 const day = forecast.shift();
                 const date = new Date(day.dt * 1000);
                 const dateEl = document.createElement('h3');
-                dateEl.textContent = `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}`;
+                dateEl.textContent = `${
+                  date.getMonth() + 1
+                }/${date.getDate()}/${date.getFullYear()}`;
 
                 forecastContainerEl.appendChild(forecastRowEl);
                 mainEl.appendChild(forecastContainerEl);
